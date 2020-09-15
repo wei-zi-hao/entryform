@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ek.project.system.form.mapper.FormDataMapper">
+    
+    <resultMap type="FormInfo" id="FormInfoResult">
+        <result property="id"    column="id"    />
+        <result property="formTitle"    column="form_title"    />
+        <result property="formName"    column="form_name"    />
+        <result property="formField"    column="form_field"    />
+        <result property="formStartTime"    column="form_start_time"    />
+        <result property="formStopTime"    column="form_stop_time"    />
+        <result property="formHtml"    column="form_html"    />
+        <result property="formMail"    column="form_mail"    />
+        <result property="formJson"    column="form_json"    />
+        <result property="formTheme"    column="form_theme"    />
+        <result property="formCss"    column="form_css"    />
+        <result property="formStrap"    column="form_strap"    />
+        <result property="formSuccess"    column="form_success"    />
+        <result property="formNote"    column="form_note"    />
+        <result property="formNoteType"    column="form_note_type"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectFormInfoVo">
+        select id, form_title, form_name, form_field, form_start_time, form_stop_time, form_html, form_mail, form_json, form_theme, form_css, form_strap, form_success, form_note,form_note_type, create_by, create_time, update_by, update_time from form_info
+    </sql>
+
+
+
+
+    <select id="findFormInfoByFormName" resultMap="FormInfoResult">
+            select id,form_css,form_strap,form_html,form_strap,form_success,form_note,form_note_type,form_start_time,form_stop_time from form_info where form_name = #{formName}
+    </select>
+
+    <select id="findFormInfoAllByFormName" resultMap="FormInfoResult">
+        select * from form_info where form_name = #{formName}
+    </select>
+
+
+    <insert id="insertDataByFormName">
+        insert into ${formName} (
+        <foreach collection="mapData.entrySet()" index="key" item="value" separator=",">
+            ${key}
+        </foreach>
+        ,insert_time,ip)values(
+        <foreach collection="mapData.entrySet()"  index="key" item="value" separator=",">
+            #{value}
+        </foreach>
+        ,now(),#{ipAddr} )
+
+    </insert>
+
+
+
+</mapper>
