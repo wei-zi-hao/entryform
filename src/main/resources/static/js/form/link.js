@@ -25,6 +25,18 @@ $(function() {
 							+"</div>")
 					})
 				}
+				$("#formContainer").find("input").each(function () {
+					const oldPlaceholder = $(this).attr("placeholder");
+					if(oldPlaceholder.indexOf("姓名")!=-1){
+						$(this).attr("placeholder","已加密，请放心输入您的真实姓名");
+					}
+					if(oldPlaceholder.indexOf("手机")!=-1){
+						$(this).attr("placeholder","已加密，请放心输入您的手机号");
+					}
+					if(oldPlaceholder.indexOf("电话")!=-1){
+						$(this).attr("placeholder","已加密，请放心输入您的电话号码");
+					}
+				})
 			}else{
 				$("#formContainer").empty();
 				var errorHtml = "<h1>"+result.msg+"</h1>"
