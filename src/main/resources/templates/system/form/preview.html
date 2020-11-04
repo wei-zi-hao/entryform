@@ -14,6 +14,7 @@
             <div class="col-sm-12 search-collapse" id="formContainer">
                [(${formInfo.formHtml})]
             </div>
+
             <div class="col-sm-12 search-collapse" >
                 <h4><i class="fa fa-fw fa-code"></i>Js代码</h4>
                 <textarea style=" height: 100px;width: 100%" id="formScript"></textarea>
@@ -23,17 +24,38 @@
 
         </div>
     </div>
+
     <th:block th:include="include :: footer" />
      <th:block th:include="include :: layout-latest-js"/>
     <script th:inline="javascript">
         var formTitle =  [[${formInfo.formTitle}]];
         var formName =  [[${formInfo.formName}]];
         var formNote =  [[${formInfo.formNote}]];
+        var formButton =  [[${formInfo.formButton}]];
         var formNoteType =  [[${formInfo.formNoteType}]];
+        var formHref =  [[${formInfo.formHref}]];
         var formId =  [[${formInfo.id}]];
+        var prefix = ctx + "system/form";
+        var uploadPrefix = ctx + "form";
+
         $(function() {
             $("title").text(formTitle);
             $("#formContainer").attr("formNum",formName);
+            if(formButton){
+                $("#formContainer").find(".btn-submit").text(formButton);
+            }
+
+            var phoneInput = ($("#formContainer").find("input[mark='phone']").length);
+            var formInline = $("#formContainer").find(".form-inline").length;
+
+            if(formNote == 1 && phoneInput>0 && formInline == 0){
+
+                $("#formContainer").find("input[mark='phone']").parent().after(
+                    "<div class='form-inline' style='margin-top: 10px;margin-bottom: 10px;'>"
+                    +"<button type='button' class='btn btn-primary' id='verifyBtn'>"+(formNoteType == 1? "发送验证码":"发送提取码")+"</button>"
+                    +"</div>"
+                )
+            }
             $("#formScript").click(function(){
                 $(this).select();
             });
@@ -43,24 +65,25 @@
             $("#formContainer").on("change","input[type='file']",formUploadFile);
             $("#formContainer").on("blur", "input[type='text']", changeFormGroupColor);
             $("#formContainer").on("click", ".btn-submit", submitData);
+            $("#formContainer").on("click", "#verifyBtn", sendVerify);
 
             var jsString = "<div id=\"formContainer\" formNum=\"form123\"></div>"
-             +"\n<script src=\"http://localhost:8100/js/jquery.min.js\"><"+"/script>"
-            +"\n<script src=\"http://localhost:8100/js/form/link.js\"><"+"/script>";
+             +"\n<script src=\"https://est.ekimmigration.com/entryform/bower_components/jquery/dist/jquery.min.js\"><"+"/script>"
+            +"\n<script src=\"https://est.ekimmigration.com/entryform/myjs/link.min.js\"><"+"/script>";
 
              jsString = jsString.replace("form123",formName);
              $("#formScript").text(jsString);
 
             $("#formContainer").find("input").each(function () {
                 const oldPlaceholder = $(this).attr("placeholder");
-                if(oldPlaceholder.indexOf("姓名")!=-1){
-                    $(this).attr("placeholder","已加密，请放心输入您的真实姓名");
+                if(oldPlaceholder && oldPlaceholder.indexOf("姓名")!=-1){
+                    $(this).attr("placeholder","已加密，请输入姓名");
                 }
-                if(oldPlaceholder.indexOf("手机")!=-1){
-                    $(this).attr("placeholder","已加密，请放心输入您的手机号");
+                if(oldPlaceholder && oldPlaceholder.indexOf("手机")!=-1){
+                    $(this).attr("placeholder","已加密，请输入手机号");
                 }
-                if(oldPlaceholder.indexOf("电话")!=-1){
-                    $(this).attr("placeholder","已加密，请放心输入您的电话号码");
+                if(oldPlaceholder && oldPlaceholder.indexOf("电话")!=-1){
+                    $(this).attr("placeholder","已加密，请输入电话号码");
                 }
             })
 
@@ -167,11 +190,11 @@
                                     var verifyNumAjax =  $.ajax({
                                         async:false,
                                         type: "post",
-                                        url: "form/verifyNum",
+                                        url: prefix+"/verifyNum",
                                         timeout: 2000,
                                         data:{"verifyNum":verifyNum,"phone":textVal},
                                         success: function (result) {
-                                            if(result.state!=200){
+                                            if(result.code!=0){
                                                 alert("验证码错误");
                                                 flag=false;
                                             }
@@ -293,10 +316,14 @@
             // 取消提交按钮的点击事件
             $("#formContainer").off("click", ".btn-submit");
 
+            var repeatPhone =  $("#formContainer input[mark=phone]").val();
+            var phoneField =  $("#formContainer input[mark=phone]").attr("id");
             var formName = $("#formContainer").attr("formNum");
             var sourceUrl = window.location.href;
             params.source_url=sourceUrl;
-            var url = "/system/form/insertData/"+formName;
+            params.repeatPhone=repeatPhone;
+            params.phoneField=phoneField;
+            var url = prefix+"/insertData/"+formName;
             var submitHtml = $(".btn-submit").html();
 
             var insertDataAjax =  $.ajax({
@@ -314,6 +341,9 @@
                     $(".btn-submit").html(submitHtml);
                     $("#formContainer").on("click", ".btn-submit", submitData);
                     alert(result.msg);
+                    if(formHref.length>0 && result.msg.indexOf("重复提交") == -1){
+                        window.open(formHref);
+                    }
                 },
                 complete : function(XMLHttpRequest,status){ //请求完成后最终执行参数
                     if(status=='timeout'){//超时,status还有success,error等值的情况
@@ -362,8 +392,8 @@
                 $(this).before("<input  style='margin-right: 10px;' mark='verify' type='text' class='form-control'   placeholder='请输入验证码' >");
             }
 
-            $.post("form/sendVerify",{"phone":phone,"type":formNoteType},function(result){
-                alert(result.message);
+            $.post(prefix+"/sendVerify",{"phone":phone,"type":formNoteType},function(result){
+                alert(result.msg);
                 verfityTime = setInterval(SetRemainTime, 1000);//启用计时器
                 $("#formContainer #verifyBtn").attr("disabled","disabled");//禁用按钮
                 $("#formContainer").off("click", "#verifyBtn");// 取消提交按钮的点击事件
@@ -418,7 +448,7 @@
             var formData = new FormData();
             formData.append('file', fileObj);
             $.ajax({
-                url: "/common/upload",
+                url:uploadPrefix+"/upload",
                 type: "post",
                 dataType: "json",
                 data: formData,
@@ -437,13 +467,17 @@
         }
 
         function setFormImgInputValue(obj,type,path){
+
             if(type=="src"){
-                obj.next().attr(type,path);
+                obj.next().attr(type,ctx+path);
             }else{
-                obj.next().val(path);
+                obj.next().val(ctx+path);
             }
 
         }
+
+
+
     </script>
 </body>
 </html>

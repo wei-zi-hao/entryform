@@ -160,7 +160,7 @@
         
         function updateFormStruct() {
             var id = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
-            $.modal.open('修改表单结构---'+ $.table.selectColumns("formTitle") , "/system/form/update/"+id);
+            $.modal.open('修改表单结构---'+ $.table.selectColumns("formTitle") , prefix+"/update/"+id);
         }
         /* 分配用户 */
         function authUser() {

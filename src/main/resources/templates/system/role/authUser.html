@@ -132,6 +132,11 @@
        			$.modal.alertWarning("请至少选择一条记录");
        			return;
        		}
+			if(rows.join().indexOf(1) != -1){
+				$.modal.alertError("不能取消管理员用户");
+				return;
+			}
+
        		$.modal.confirm("确认要删除选中的" + rows.length + "条数据吗?", function() {
     			var data = { "roleId": $("#roleId").val(), "userIds": rows.join() };
     			$.operate.submit(prefix + "/cancelAll", "post", "json", data);
@@ -140,6 +145,10 @@
 		
 		/* 分配用户-取消授权 */
 		function cancelAuthUser(userId) {
+			if(userId == 1){
+				$.modal.alertError("不能取消管理员用户");
+				return;
+			}
 			$.modal.confirm("确认要取消该用户角色吗？", function() {
 				$.operate.post(prefix + "/cancel", { "roleId": $("#roleId").val(), "userId": userId });
 		    })

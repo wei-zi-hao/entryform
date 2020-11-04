@@ -51,6 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateMailConfig" parameterType="MailConfig">
         update mail_config
         <trim prefix="SET" suffixOverrides=",">
+            <if test="smtpAdress != null  and smtpAdress != ''">smtp_adress = #{smtpAdress},</if>
             <if test="smtpPort != null  and smtpPort != ''">smtp_port = #{smtpPort},</if>
             <if test="sendMail != null  and sendMail != ''">send_mail = #{sendMail},</if>
             <if test="authCode != null  and authCode != ''">auth_code = #{authCode},</if>

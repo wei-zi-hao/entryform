@@ -135,8 +135,10 @@
 
 		/* 用户头像显示 */
 		function avatarTools(row) {
-			if (! row.avatar) {
-				row.avatar = '/img/profile.jpg';
+			if (!row.avatar) {
+				row.avatar = '/entryform/img/profile.jpg';
+			}else{
+				row.avatar = "/entryform"+row.avatar;
 			}
 			return '<img src="'+row.avatar+'" class="img-circle" alt="User Image" width="27px" height="27px" onclick="showAvatar(\''+row.avatar+'\')">';
 		}

@@ -72,6 +72,29 @@
                     <input id="successMessageId" name="formSuccess" class="form-control" type="text" placeholder="您的提交已成功保存！将会有专人联系确认，谢谢。">
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">提交按钮文字：</label>
+                <div class="col-sm-8" >
+                    <input id="formButtonId" name="formButton" class="form-control" type="text" placeholder="提交">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">表单是否可重复提交：</label>
+                <div class="col-sm-8" id="formRepeat">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('form_yes_no')}">
+                        <input type="radio" th:id="${'formRepeat_' + dict.dictCode}" name="formRepeat" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${'formRepeat_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">提交后跳转链接：</label>
+                <div class="col-sm-8" >
+                    <input id="formHrefId" name="formHref" class="form-control" type="text" placeholder="默认为空则不跳转">
+                </div>
+            </div>
         </form>
 
 
@@ -244,6 +267,10 @@
                             return $.validate.unique(data);
                         }
                     }
+                },
+                formHref:{
+                    maxlength: 450,
+                    url:true
                 }
             },
             messages: {
@@ -433,10 +460,16 @@
             if (successMessage == "") {
                 successMessage = "您的提交已成功保存！将会有专人联系确认，谢谢。";
             }
-            // 获取提交成功后提示文字
+            // 获取css
             var formCss = $("#formCss").val().trim();
             if (formCss == "") {
                 formCss = "#formContainer form h3{ display:none;}"
+            }
+
+            // 获取提交按钮文字
+            var formButton = $("#formButtonId").val().trim();
+            if (formButton == "") {
+                formButton = "提交";
             }
 
             // 获取时间范围 输入框的内容
@@ -445,7 +478,8 @@
             var formStrap = $("#formStrap").find(":checked").val();
             var formNote = $("#formNote").find(":checked").val();
             var formNoteType = $("#formNoteType").find(":checked").val();
-            var userIds = new Array();
+            var formRepeat= $("#formRepeat").find(":checked").val();
+            var formHref = $("#formHrefId").val();
 
             // 获取编辑表单全部数据
             var formDatas = new Array();
@@ -556,6 +590,8 @@
             params.formSuccess = successMessage;
             //css
             params.formCss = formCss;
+            //提交按钮文字
+            params.formButton = formButton;
 
             //报名表各个字段描述
             fieldTextList.push("来源地址");
@@ -570,6 +606,8 @@
             params.formStrap = formStrap;
             params.formNote = formNote;
             params.formNoteType = formNoteType;
+            params.formRepeat = formRepeat;
+            params.formHref = formHref;
             var formHtml = editFormHtml(formTitle, formDatas,formNote,formNoteType);
             params.formHtml = formHtml;
             params.formJson = jsonToString;
@@ -697,7 +735,7 @@
                         htmlContent += "<label>"
                             + "<input type='radio' name='"+ formDatas[i].fieldName +"'  value='"+ formDatas[i].fieldOptionList[j]+"'>"
                             + formDatas[i].fieldOptionList[j]
-                            + "&nbsp;&nbsp;&nbsp;&nbsp;" + "</label>";
+                            + "</label>";
                     }
                     htmlContent += "</div></div>";
                 }
@@ -712,7 +750,7 @@
                         htmlContent += "<label>"
                             + "<input type='checkbox' name='"+ formDatas[i].fieldName +"'  value='"+ formDatas[i].fieldOptionList[j]+"'>"
                             + formDatas[i].fieldOptionList[j]
-                            + "&nbsp;&nbsp;&nbsp;&nbsp;" + "</label>";
+                             + "</label>";
                     }
                     htmlContent += "</div></div>";
                 }

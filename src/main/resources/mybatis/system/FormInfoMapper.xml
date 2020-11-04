@@ -16,8 +16,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="formCss"    column="form_css"    />
         <result property="formStrap"    column="form_strap"    />
         <result property="formSuccess"    column="form_success"    />
+        <result property="formButton"    column="form_button"    />
         <result property="formNote"    column="form_note"    />
         <result property="formNoteType"    column="form_note_type"    />
+        <result property="formRepeat"    column="form_repeat"    />
+        <result property="formHref"    column="form_href"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -25,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectFormInfoVo">
-        select id, form_title, form_name, form_field, form_start_time, form_stop_time, form_html, form_json, form_css, form_strap, form_success, form_note,form_note_type, create_by, create_time, update_by, update_time from form_info
+        select id, form_title, form_name, form_field, form_start_time, form_stop_time, form_html, form_json, form_css, form_strap, form_success,form_button, form_note,form_note_type,  form_repeat, form_href,create_by, create_time, update_by, update_time from form_info
     </sql>
 
     <select id="selectFormInfoList"  resultMap="FormInfoResult">
@@ -47,7 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="findFormInfoByFormName" resultMap="FormInfoResult">
-            select form_css,form_strap,form_html,form_strap,form_success,form_note,form_note_type from form_info where form_name = #{formName}
+            select form_css,form_strap,form_html,form_strap,form_success,form_button,form_note,form_note_type from form_info where form_name = #{formName}
     </select>
 
     <select id="selectFormColumn" resultType="java.lang.String" parameterType="String">
@@ -71,8 +74,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="formCss != null  and formCss != ''">form_css,</if>
             <if test="formStrap != null ">form_strap,</if>
             <if test="formSuccess != null  and formSuccess != ''">form_success,</if>
+            <if test="formButton != null  and formButton != ''">form_button,</if>
             <if test="formNote != null ">form_note,</if>
             <if test="formNoteType != null ">form_note_type,</if>
+            <if test="formRepeat != null ">form_repeat,</if>
+            <if test="formHref != null ">form_href,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
@@ -89,8 +95,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="formCss != null  and formCss != ''">#{formCss},</if>
             <if test="formStrap != null ">#{formStrap},</if>
             <if test="formSuccess != null  and formSuccess != ''">#{formSuccess},</if>
+            <if test="formButton != null  and formButton != ''">#{formButton},</if>
             <if test="formNote != null ">#{formNote},</if>
             <if test="formNoteType != null ">#{formNoteType},</if>
+            <if test="formRepeat != null ">#{formRepeat},</if>
+            <if test="formHref != null ">#{formHref},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
@@ -126,8 +135,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="formCss != null  and formCss != ''">form_css = #{formCss},</if>
             <if test="formStrap != null ">form_strap = #{formStrap},</if>
             <if test="formSuccess != null  and formSuccess != ''">form_success = #{formSuccess},</if>
+            <if test="formButton != null  and formButton != ''">form_button = #{formButton},</if>
             <if test="formNote != null ">form_note = #{formNote},</if>
             <if test="formNoteType != null ">form_note_type = #{formNoteType},</if>
+            <if test="formRepeat != null ">form_repeat = #{formRepeat},</if>
+            <if test="formHref != null ">form_href = #{formHref},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
