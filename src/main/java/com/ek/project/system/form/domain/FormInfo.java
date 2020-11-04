@@ -65,6 +65,12 @@ public class FormInfo extends BaseEntity
     /** 表单验证码类型 */
     private Integer formNoteType;
 
+    /** 表单提交后跳转链接 */
+    private String formHref;
+
+    /** 表单是否可重复提交 */
+    private Integer formRepeat;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -201,6 +207,22 @@ public class FormInfo extends BaseEntity
         this.formButton = formButton;
     }
 
+    public String getFormHref() {
+        return formHref;
+    }
+
+    public void setFormHref(String formHref) {
+        this.formHref = formHref;
+    }
+
+    public Integer getFormRepeat() {
+        return formRepeat;
+    }
+
+    public void setFormRepeat(Integer formRepeat) {
+        this.formRepeat = formRepeat;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("FormInfo{");
@@ -218,6 +240,8 @@ public class FormInfo extends BaseEntity
         sb.append(", formButton='").append(formButton).append('\'');
         sb.append(", formNote=").append(formNote);
         sb.append(", formNoteType=").append(formNoteType);
+        sb.append(", formHref='").append(formHref).append('\'');
+        sb.append(", formRepeat=").append(formRepeat);
         sb.append('}');
         return sb.toString();
     }

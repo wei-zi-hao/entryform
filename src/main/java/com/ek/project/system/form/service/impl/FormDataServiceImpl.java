@@ -15,20 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
  * 报名表Service业务层处理
- * 
+ *
  * @author eric
  * @date 2020-08-28
  */
 @Service
-public class FormDataServiceImpl implements IFormDataService
-{
+public class FormDataServiceImpl implements IFormDataService {
     @Autowired
     private FormDataMapper formDataMapper;
 
@@ -77,17 +74,36 @@ public class FormDataServiceImpl implements IFormDataService
         Date formStartTime = formInfo.getFormStartTime();
         Date formStopTime = formInfo.getFormStopTime();
 
-        if (System.currentTimeMillis() < formStartTime.getTime() ) {
-            return"活动还没开始";
+        if (System.currentTimeMillis() < formStartTime.getTime()) {
+            return "活动还没开始";
         }
-        if (System.currentTimeMillis() > formStopTime.getTime() ) {
-            return"活动已经结束";
+        if (System.currentTimeMillis() > formStopTime.getTime()) {
+            return "活动已经结束";
+        }
+
+        //如果不可重复提交
+        if (formInfo.getFormRepeat() == 0 ) {
+            try{
+                String phoneField = (String)mapData.get("phoneField");
+                String repeatPhone = (String)mapData.get("repeatPhone");
+                if(StringUtils.isNotEmpty(phoneField) && StringUtils.isNotEmpty(repeatPhone)){
+                    int count = formDataMapper.findRepeatPhoneByFormName(formName,mapData.get("phoneField"),mapData.get("repeatPhone"));
+                    if(count >0 ){
+                        return "您的号码已经存在，请勿重复提交！";
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
         String ipAddr = IpUtils.getIpAddr();
 
 
         try {
+            //插入数据之前 ，移除判断重复的2个字段
+            mapData.remove("repeatPhone");
+            mapData.remove("phoneField");
             formDataMapper.insertDataByFormName(formName, mapData, ipAddr);
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,11 +111,11 @@ public class FormDataServiceImpl implements IFormDataService
         }
 
         // 如果邮箱不为空 获取需要的数据来编辑html表格 作为邮箱内容
-        Mail mail =  new Mail();
+        Mail mail = new Mail();
         mail.setFormId(formInfo.getId());
         List<Mail> mailList = mailMapper.selectAllocatedListByForm(mail);
 
-        if (mailList.size()>0) {
+        if (mailList.size() > 0) {
             String formField = formInfo.getFormField();
             String formTitle = formInfo.getFormTitle();
             String[] split = formField.split(",");
@@ -171,7 +187,7 @@ public class FormDataServiceImpl implements IFormDataService
         }
         try {
             // 发送短信
-            String verifyNumber = NoteUtil.sendNote(phone,type);
+            String verifyNumber = NoteUtil.sendNote(phone, type);
             // 保存本次发送的手机和IP
             formDataMapper.saveNoteVerify(phone, ip, verifyNumber);
 
@@ -200,6 +216,7 @@ public class FormDataServiceImpl implements IFormDataService
         }
         return "验证成功";
     }
+
 
 
 }

@@ -39,4 +39,6 @@ public interface FormDataMapper
     int saveVerifyNumber(@Param("verifyNumber")String verifyNumber);
 
     String verifyNum(@Param("phone")String phone);
+
+    int findRepeatPhoneByFormName(@Param("formName")String formName, @Param("phoneField")Object phoneField, @Param("repeatPhone")Object repeatPhone);
 }
