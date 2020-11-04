@@ -160,7 +160,7 @@
            $.get("http://ip-api.com/json/"+ip+"?lang=zh-CN",function (res) {
 
                if(res.status == "success"){
-                   const adr = res.country+res.regionName+res.city;
+                   const adr = res.country+"-"+res.regionName+"-"+res.city;
                    $.modal.alertSuccess(adr);
                }else{
                    $.modal.alertError(res.message);

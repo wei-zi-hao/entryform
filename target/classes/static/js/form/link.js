@@ -25,6 +25,21 @@ $(function() {
 							+"</div>")
 					})
 				}
+				if(result.data.formButton){
+					$("#formContainer").find(".btn-submit").text(result.data.formButton);
+				}
+				$("#formContainer").find("input").each(function () {
+					const oldPlaceholder = $(this).attr("placeholder");
+                    if(oldPlaceholder && oldPlaceholder.indexOf("姓名")!=-1){
+                        $(this).attr("placeholder","已加密，请放心输入您的真实姓名");
+                    }
+                    if(oldPlaceholder && oldPlaceholder.indexOf("手机")!=-1){
+                        $(this).attr("placeholder","已加密，请放心输入您的手机号");
+                    }
+                    if(oldPlaceholder && oldPlaceholder.indexOf("电话")!=-1){
+                        $(this).attr("placeholder","已加密，请放心输入您的电话号码");
+                    }
+				})
 			}else{
 				$("#formContainer").empty();
 				var errorHtml = "<h1>"+result.msg+"</h1>"
@@ -419,7 +434,7 @@ function formUploadFile(){
 	 	var formData = new FormData();
 		formData.append('file', fileObj);
 		$.ajax({
-		        url: "http://localhost:8100/common/upload",
+		        url: "http://localhost:8100/form/upload",
 		        type: "post",
 		        dataType: "json",
 		        data: formData,
@@ -438,10 +453,11 @@ function formUploadFile(){
 }
 
 function setFormImgInputValue(obj,type,path){
+	var realPath = "http://localhost:8100"+path;
 	if(type=="src"){
-		obj.next().attr(type,path);
+		obj.next().attr(type,realPath);
 	}else{
-		obj.next().val(path);
+		obj.next().val(realPath);
 	}
 	
 }
