@@ -28,4 +28,15 @@ public interface FormDataMapper
      * 通过名称查询表单全部数据
      * */
     public FormInfo findFormInfoAllByFormName(String formName);
+
+
+    int saveNoteVerify(@Param("phone")String phone, @Param("ip")String ip, @Param("verifyNumber")String verifyNumber);
+
+    String selectVerifyTimeByPhone(@Param("phone")String phone);
+
+    int  selectVerifyTimeByIP(@Param("ip")String ip,@Param("time")String time);
+
+    int saveVerifyNumber(@Param("verifyNumber")String verifyNumber);
+
+    String verifyNum(@Param("phone")String phone);
 }

@@ -233,9 +233,12 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/img/**", "anon");
         filterChainDefinitionMap.put("/ajax/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
+        filterChainDefinitionMap.put("/myjs/**", "anon");
+        filterChainDefinitionMap.put("/bower_components/**", "anon");
         filterChainDefinitionMap.put("/ruoyi/**", "anon");
         filterChainDefinitionMap.put("/druid/**", "anon");
         filterChainDefinitionMap.put("/system/form/**", "anon");
+        filterChainDefinitionMap.put("/form/**", "anon");
 
 
         filterChainDefinitionMap.put("/captcha/captchaImage**", "anon");

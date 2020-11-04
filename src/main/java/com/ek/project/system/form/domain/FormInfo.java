@@ -56,6 +56,9 @@ public class FormInfo extends BaseEntity
     /** 提交成功后提示语 */
     private String formSuccess;
 
+    /** 表单提交文字 */
+    private String formButton;
+
     /** 表单是否启用验证码 */
     private Integer formNote;
 
@@ -190,6 +193,14 @@ public class FormInfo extends BaseEntity
         this.formNoteType = formNoteType;
     }
 
+    public String getFormButton() {
+        return formButton;
+    }
+
+    public void setFormButton(String formButton) {
+        this.formButton = formButton;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("FormInfo{");
@@ -204,6 +215,7 @@ public class FormInfo extends BaseEntity
         sb.append(", formCss='").append(formCss).append('\'');
         sb.append(", formStrap=").append(formStrap);
         sb.append(", formSuccess='").append(formSuccess).append('\'');
+        sb.append(", formButton='").append(formButton).append('\'');
         sb.append(", formNote=").append(formNote);
         sb.append(", formNoteType=").append(formNoteType);
         sb.append('}');

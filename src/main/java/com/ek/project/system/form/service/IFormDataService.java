@@ -21,4 +21,12 @@ public interface IFormDataService
      * 插入表单数据
      */
     public String insertDataByFormName(String formName, Map<String, Object> map);
+    /**
+     * 发送验证码
+     */
+    String sendVerify(String phone,String type);
+    /**
+     * 检验验证码
+     */
+    String verifyNum(String phone, String verifyNum);
 }

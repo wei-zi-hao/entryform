@@ -2,6 +2,7 @@ package com.ek.project.system.form.service.impl;
 
 import com.ek.common.utils.IpUtils;
 import com.ek.common.utils.MailUtil;
+import com.ek.common.utils.NoteUtil;
 import com.ek.common.utils.StringUtils;
 import com.ek.project.system.form.domain.FormInfo;
 import com.ek.project.system.form.mapper.FormDataMapper;
@@ -13,6 +14,7 @@ import com.ek.project.system.mailConfig.mapper.MailConfigMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -131,6 +133,72 @@ public class FormDataServiceImpl implements IFormDataService
         } else {
             return "提交成功！";
         }
+    }
+
+    @Override
+    public String sendVerify(String phone, String type) {
+        if (StringUtils.isEmpty(phone)) {
+            throw new RuntimeException("手机号码为空");
+        }
+        if (StringUtils.isEmpty(type)) {
+            throw new RuntimeException("出现了异常，请稍后再试。");
+        }
+
+        String ip = IpUtils.getIpAddr();
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        // 一小时前的时间
+        long time = System.currentTimeMillis() - 3600 * 1000;
+        String formatTime = simpleDateFormat.format(time);
+
+        // 一小时内此IP发送的次数
+        int count = formDataMapper.selectVerifyTimeByIP(ip, formatTime);
+
+        try {
+            String phoneLastTime = formDataMapper.selectVerifyTimeByPhone(phone);
+            if (phoneLastTime != null) {
+                long phoneTime = simpleDateFormat.parse(phoneLastTime.split("\\.")[0]).getTime();
+                if (Math.abs(new Date(System.currentTimeMillis() + 1000 * 3600 * 8).getTime() - phoneTime) < 50000) {
+                    throw new RuntimeException("发送过于频繁，请稍后再试！");
+                }
+            }
+        } catch (Exception e1) {
+            throw new RuntimeException("发送过于频繁，请稍后再试！");
+        }
+        if (count >= 10) {
+            throw new RuntimeException("近期发送过于频繁，请稍后再试！");
+        }
+        try {
+            // 发送短信
+            String verifyNumber = NoteUtil.sendNote(phone,type);
+            // 保存本次发送的手机和IP
+            formDataMapper.saveNoteVerify(phone, ip, verifyNumber);
+
+            return "发送成功";
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("发送失败");
+        }
+    }
+
+    @Override
+    public String verifyNum(String phone, String verifyNum) {
+        if (StringUtils.isEmpty(phone)) {
+            throw new RuntimeException("手机号码为空");
+        }
+        if (StringUtils.isEmpty(verifyNum)) {
+            throw new RuntimeException("验证码为空");
+        }
+        try {
+            String selectVerifyNum = formDataMapper.verifyNum(phone);
+            if (selectVerifyNum == null || !selectVerifyNum.equals(verifyNum)) {
+                throw new RuntimeException("验证失败");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("验证失败");
+        }
+        return "验证成功";
     }
 
 

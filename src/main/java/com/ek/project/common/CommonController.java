@@ -60,12 +60,15 @@ public class CommonController {
         }
     }
 
+
+
     /**
      * 通用上传请求
      */
     @PostMapping("/common/upload")
     @ResponseBody
-    public AjaxResult uploadFile(MultipartFile file) throws Exception {
+    public AjaxResult uploadFile(MultipartFile file,HttpServletResponse response) throws Exception {
+        response.setHeader("Access-Control-Allow-Origin", "*");
         try {
             // 上传文件路径
             String filePath = EKConfig.getUploadPath();
@@ -104,4 +107,5 @@ public class CommonController {
                 "attachment;fileName=" + FileUtils.setFileDownloadHeader(request, downloadName));
         FileUtils.writeBytes(downloadPath, response.getOutputStream());
     }
+
 }

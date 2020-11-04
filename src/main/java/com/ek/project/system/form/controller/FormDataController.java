@@ -69,4 +69,37 @@ public class FormDataController extends BaseController
         return AjaxResult.success(message);
     }
 
+
+    /**
+     * 发送手机验证码
+     * @param phone
+     * @return
+     */
+    @RequestMapping("/sendVerify")
+    @ResponseBody
+    public AjaxResult sendVerify(String phone,String type, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        try{
+
+            String message = formDataService.sendVerify(phone,type);
+            return AjaxResult.success(message);
+        }catch (Exception e){
+            e.printStackTrace();
+            return AjaxResult.success();
+        }
+    }
+
+    /**
+     * 校验验证码
+     * @param phone
+     * @return
+     */
+    @RequestMapping("/verifyNum")
+    @ResponseBody
+    public AjaxResult verifyNum(String phone,String verifyNum, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        String message = formDataService.verifyNum(phone,verifyNum);
+        return AjaxResult.success(message);
+    }
+
 }

@@ -186,6 +186,18 @@ public class FormInfoController extends BaseController
     }
 
     /**
+     * 修改保存报名表基础信息
+     */
+    @RequiresPermissions("system:form:edit")
+    @PostMapping("/editFormHtml")
+    @ResponseBody
+    public AjaxResult editFormHtml(FormInfo formInfo)
+    {
+        return toAjax(formInfoService.updateFormInfo(formInfo));
+    }
+
+
+    /**
      * 增加表单的一个字段
      * @return
      */
